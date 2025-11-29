@@ -6,11 +6,14 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -37,49 +40,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Button test = (Button) findViewById(R.id.button);
-
-        BluetoothManager bluetoothManager = getSystemService(BluetoothManager.class);
-        BluetoothAdapter bluetoothAdapter = bluetoothManager.getAdapter();
-        if (bluetoothAdapter == null) {
-            // Device doesn't support Bluetooth
-        }
-
-        if (!bluetoothAdapter.isEnabled()) {
-            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-            onActivityResult(REQUEST_ENABLE_BT, 200, enableBtIntent);
-        }
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-
-        handler = new Handler(Looper.getMainLooper());
-
-        Set<BluetoothDevice> bluetoothDevice = bluetoothAdapter.getBondedDevices();
-        BluetoothDevice device = (BluetoothDevice) bluetoothDevice.toArray()[0];
-        connectThread = new ConnectThread(device, bluetoothAdapter, arduinoUUID);
-
-        if (connectThread.getMmSocket().isConnected())
-        {
-            connectedThread = new ConnectedThread(connectThread.getMmSocket(), handler);
-        }
-
-        test.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                connectedThread.write(ByteBuffer.allocate(4).putInt(1).array());
-            }
-        });
-
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -87,6 +47,85 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        Button test = (Button) findViewById(R.id.button);
+        Button connectBtn = (Button) findViewById(R.id.Connectbtn);
+        TextView connectInformationTV = findViewById(R.id.ConnectInformationTV);
+
+        connectBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                BluetoothManager bluetoothManager = getSystemService(BluetoothManager.class);
+                BluetoothAdapter bluetoothAdapter = bluetoothManager.getAdapter();
+
+                if (bluetoothAdapter == null) {
+                    connectInformationTV.setText("Device doesn't support Bluetooth");
+                    return;
+                }
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    if (checkSelfPermission(Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                        requestPermissions(new String[]{Manifest.permission.BLUETOOTH_CONNECT}, 1);
+                        return;
+                    }
+                }
+
+                if (!bluetoothAdapter.isEnabled()) {
+                    Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                    startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+                    onActivityResult(REQUEST_ENABLE_BT, 200, enableBtIntent);
+                }
+
+                if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
+                    // TODO: Consider calling
+                    //    ActivityCompat#requestPermissions
+                    // here to request the missing permissions, and then overriding
+                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                    //                                          int[] grantResults)
+                    // to handle the case where the user grants the permission. See the documentation
+                    // for ActivityCompat#requestPermissions for more details.
+                    //return;
+                }
+
+
+                // Check if HC-05 is already paired with phone
+                Set<BluetoothDevice> bluetoothDevices = bluetoothAdapter.getBondedDevices();
+                BluetoothDevice carBluetoothModule = null;
+                for (BluetoothDevice d: bluetoothDevices){
+                    String test = d.getName();
+                    if (d.getName().equals("HC-05")){
+                        carBluetoothModule = d;
+                        break;
+                    }
+                }
+
+                if (carBluetoothModule != null){
+                    connectThread = new ConnectThread(carBluetoothModule, bluetoothAdapter, arduinoUUID);
+                    connectThread.start();
+                    try {
+                        connectThread.join();
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+
+                if (connectThread.getMmSocket().isConnected())
+                {
+                    handler = new Handler(Looper.getMainLooper());
+                    connectedThread = new ConnectedThread(connectThread.getMmSocket(), handler);
+                }
+            }
+        });
+
+        test.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (connectedThread != null)
+                    connectedThread.write(ByteBuffer.allocate(4).putInt(1).array());
+            }
+        });
+
+
     }
 
     @Override
