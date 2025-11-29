@@ -3,6 +3,7 @@ package com.example.carremotecontroller;
 import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothManager;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -91,29 +92,61 @@ public class MainActivity extends AppCompatActivity {
                 // Check if HC-05 is already paired with phone
                 Set<BluetoothDevice> bluetoothDevices = bluetoothAdapter.getBondedDevices();
                 BluetoothDevice carBluetoothModule = null;
-                for (BluetoothDevice d: bluetoothDevices){
+                for (BluetoothDevice d: bluetoothDevices) {
                     String test = d.getName();
-                    if (d.getName().equals("HC-05")){
+                    if (d.getName().equals("HC-05")) {
                         carBluetoothModule = d;
                         break;
                     }
                 }
 
-                if (carBluetoothModule != null){
-                    connectThread = new ConnectThread(carBluetoothModule, bluetoothAdapter, arduinoUUID);
-                    connectThread.start();
-                    try {
-                        connectThread.join();
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
+                BLEManager bleManager = new BLEManager(MainActivity.this);
+                bleManager.setListener(new BLEManager.BLEListener() {
+                    @Override
+                    public void onConnecting() {
+                        connectInformationTV.setText("Connecting...");
                     }
-                }
 
-                if (connectThread.getMmSocket().isConnected())
-                {
-                    handler = new Handler(Looper.getMainLooper());
-                    connectedThread = new ConnectedThread(connectThread.getMmSocket(), handler);
-                }
+                    @Override
+                    public void onConnected() {
+                        connectInformationTV.setText("Device connected");
+                    }
+
+                    @Override
+                    public void onServicesDiscovered() {
+                        connectInformationTV.setText("");
+                    }
+
+                    @Override
+                    public void onWritableCharacteristicFound(BluetoothGattCharacteristic characteristic) {
+                        connectInformationTV.setText("Ready");
+                    }
+
+                    @Override
+                    public void onDataWritten(byte[] data) {
+                        connectInformationTV.setText("Sent: " + ByteBuffer.wrap(data).getInt());
+                    }
+
+                    @Override
+                    public void onNotification(byte[] data) {
+                        connectInformationTV.setText("Recieved: " + ByteBuffer.wrap(data).getInt());
+                    }
+
+                    @Override
+                    public void onFailed(String reason) {
+                        connectInformationTV.setText("Error: " + reason);
+                    }
+
+                    @Override
+                    public void onDisconnected() {
+                        connectInformationTV.setText("Device disconnected");
+                    }
+                });
+
+                if (carBluetoothModule != null)
+                    bleManager.connect(carBluetoothModule);
+                else
+                    connectInformationTV.setText("Couldn't find HC-05");
             }
         });
 
