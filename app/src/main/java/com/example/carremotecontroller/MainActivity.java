@@ -15,7 +15,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
 import androidx.annotation.RequiresPermission;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -50,7 +49,8 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        Button test = (Button) findViewById(R.id.button);
+        Button testOn = (Button) findViewById(R.id.TestOnBtn);
+        Button testOff = (Button) findViewById(R.id.TestOffBtn);
         Button connectBtn = (Button) findViewById(R.id.Connectbtn);
         TextView connectInformationTV = findViewById(R.id.ConnectInformationTV);
 
@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void onServicesDiscovered() {
-                        //connectInformationTV.setText("");
+                        connectInformationTV.setText("Found services");
                     }
 
                     @Override
@@ -151,20 +151,30 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        test.setOnClickListener(new View.OnClickListener() {
+        testOn.setOnClickListener(new View.OnClickListener() {
             @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
             @Override
             public void onClick(View v) {
-                bleManager.sendInt(CarCommands.TEST.getValue());
+                bleManager.sendInt(CarCommands.TEST_ON.getValue());
+            }
+        });
+
+        testOff.setOnClickListener(new View.OnClickListener() {
+            @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
+            @Override
+            public void onClick(View v) {
+                bleManager.sendInt(CarCommands.TEST_OFF.getValue());
             }
         });
 
 
     }
 
+    @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        connectThread.cancel();
+        bleManager.disconnect();
+        //connectThread.cancel();
     }
 }

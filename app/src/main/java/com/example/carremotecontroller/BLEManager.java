@@ -5,14 +5,12 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
-import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothProfile;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.RequiresPermission;
 
 import java.nio.ByteBuffer;
@@ -52,31 +50,19 @@ public class BLEManager{
         }
         listener.onConnecting();
         gatt = device.connectGatt(context, false, new BluetoothGattCallback() {
+
+            // (Not implemented) Read data when it was changed on the device (missing observing correct characteristic)
             @Override
             public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
-                super.onCharacteristicChanged(gatt, characteristic);
-            }
-
-            @Override
-            public void onCharacteristicChanged(@NonNull BluetoothGatt gatt, @NonNull BluetoothGattCharacteristic characteristic, @NonNull byte[] value) {
-                super.onCharacteristicChanged(gatt, characteristic, value);
-            }
-
-            @Override
-            public void onCharacteristicRead(@NonNull BluetoothGatt gatt, @NonNull BluetoothGattCharacteristic characteristic, @NonNull byte[] value, int status) {
-                super.onCharacteristicRead(gatt, characteristic, value, status);
-            }
-
-            @Override
-            public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
-                super.onCharacteristicRead(gatt, characteristic, status);
+                byte[] data = characteristic.getValue();
+                handler.post(() -> listener.onNotification(data));
             }
 
             // When data was sent through BLE, gives back to MainActivity what was sent through listener
             @Override
             public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
                 if (status != BluetoothGatt.GATT_SUCCESS){
-                    handler.post(() -> listener.onError("There is an issue with sending data."));
+                    handler.post(() -> listener.onError("There is an issue with sending data. Status: " + status));
                     return;
                 }
 
@@ -98,53 +84,8 @@ public class BLEManager{
                     gatt.discoverServices();
                 } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
                     handler.post(() -> listener.onDisconnected());
-                    gatt.close();
+                    disconnect();
                 }
-            }
-
-            @Override
-            public void onDescriptorRead(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status) {
-                super.onDescriptorRead(gatt, descriptor, status);
-            }
-
-            @Override
-            public void onDescriptorRead(@NonNull BluetoothGatt gatt, @NonNull BluetoothGattDescriptor descriptor, int status, @NonNull byte[] value) {
-                super.onDescriptorRead(gatt, descriptor, status, value);
-            }
-
-            @Override
-            public void onDescriptorWrite(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status) {
-                super.onDescriptorWrite(gatt, descriptor, status);
-            }
-
-            @Override
-            public void onMtuChanged(BluetoothGatt gatt, int mtu, int status) {
-                super.onMtuChanged(gatt, mtu, status);
-            }
-
-            @Override
-            public void onPhyRead(BluetoothGatt gatt, int txPhy, int rxPhy, int status) {
-                super.onPhyRead(gatt, txPhy, rxPhy, status);
-            }
-
-            @Override
-            public void onPhyUpdate(BluetoothGatt gatt, int txPhy, int rxPhy, int status) {
-                super.onPhyUpdate(gatt, txPhy, rxPhy, status);
-            }
-
-            @Override
-            public void onReadRemoteRssi(BluetoothGatt gatt, int rssi, int status) {
-                super.onReadRemoteRssi(gatt, rssi, status);
-            }
-
-            @Override
-            public void onReliableWriteCompleted(BluetoothGatt gatt, int status) {
-                super.onReliableWriteCompleted(gatt, status);
-            }
-
-            @Override
-            public void onServiceChanged(@NonNull BluetoothGatt gatt) {
-                super.onServiceChanged(gatt);
             }
 
             // After services are found sends info to MainActivity through the listener & calls function to find writable data stream.
@@ -184,8 +125,18 @@ public class BLEManager{
     // Sends provided int to device connected through BLE
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     public void sendInt(int value) {
+        if (gatt == null || writableCharacteristic == null){
+            handler.post(() -> listener.onError("Connection wasn't established or couldn't find writable characteristic"));
+        }
         byte[] data = ByteBuffer.allocate(4).putInt(value).array();
         writableCharacteristic.setValue(data);
         gatt.writeCharacteristic(writableCharacteristic);
+    }
+
+    @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
+    public void disconnect() {
+        gatt.disconnect();
+        gatt.close();
+        gatt = null;
     }
 }
