@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -24,17 +23,11 @@ import androidx.core.view.WindowInsetsCompat;
 
 import java.nio.ByteBuffer;
 import java.util.Set;
-import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
 
     // Local request code, equal to or greater than 0
     final int REQUEST_ENABLE_BT = 0;
-
-    UUID arduinoUUID = UUID.randomUUID();
-    ConnectThread connectThread;
-    Handler handler;
-    ConnectedThread connectedThread;
     BLEManager bleManager;
 
     @Override
@@ -166,8 +159,6 @@ public class MainActivity extends AppCompatActivity {
                 bleManager.sendInt(CarCommands.TEST_OFF.getValue());
             }
         });
-
-
     }
 
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
@@ -175,6 +166,5 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         bleManager.disconnect();
-        //connectThread.cancel();
     }
 }
