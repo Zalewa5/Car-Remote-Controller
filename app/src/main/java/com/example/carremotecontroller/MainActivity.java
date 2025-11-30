@@ -15,6 +15,8 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresPermission;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.graphics.Insets;
@@ -34,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     ConnectThread connectThread;
     Handler handler;
     ConnectedThread connectedThread;
+    BLEManager bleManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
 
-                BLEManager bleManager = new BLEManager(MainActivity.this);
+                bleManager = new BLEManager(MainActivity.this);
                 bleManager.setListener(new BLEManager.BLEListener() {
                     @Override
                     public void onConnecting() {
@@ -131,7 +134,7 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onFailed(String reason) {
+                    public void onError(String reason) {
                         connectInformationTV.setText("Error: " + reason);
                     }
 
@@ -149,10 +152,10 @@ public class MainActivity extends AppCompatActivity {
         });
 
         test.setOnClickListener(new View.OnClickListener() {
+            @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
             @Override
             public void onClick(View v) {
-                if (connectedThread != null)
-                    connectedThread.write(ByteBuffer.allocate(4).putInt(CarCommands.TEST.getValue()).array());
+                bleManager.sendInt(CarCommands.TEST.getValue());
             }
         });
 
