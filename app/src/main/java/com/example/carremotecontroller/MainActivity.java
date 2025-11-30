@@ -10,10 +10,8 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -114,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void onServicesDiscovered() {
-                        connectInformationTV.setText("");
+                        //connectInformationTV.setText("");
                     }
 
                     @Override
@@ -154,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (connectedThread != null)
-                    connectedThread.write(ByteBuffer.allocate(4).putInt(1).array());
+                    connectedThread.write(ByteBuffer.allocate(4).putInt(CarCommands.TEST.getValue()).array());
             }
         });
 
