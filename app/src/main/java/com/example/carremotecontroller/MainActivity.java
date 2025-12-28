@@ -1,6 +1,7 @@
 package com.example.carremotecontroller;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGattCharacteristic;
@@ -9,6 +10,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -16,6 +18,7 @@ import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.RequiresPermission;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -30,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     final int REQUEST_ENABLE_BT = 0;
     BLEManager bleManager;
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,8 +46,12 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        Button testOn = (Button) findViewById(R.id.TestOnBtn);
-        Button testOff = (Button) findViewById(R.id.TestOffBtn);
+        Button forwardBtn = (Button) findViewById(R.id.ForwardsBtn);
+        Button backwardBtn = (Button) findViewById(R.id.BackwardsBtn);
+        Button stopBtn = (Button) findViewById(R.id.StopBtn);
+        Button leftBtn = (Button) findViewById(R.id.LeftBtn);
+        Button rightBtn = (Button) findViewById(R.id.RightBtn);
+        ConstraintLayout controlsLayout = (ConstraintLayout) findViewById(R.id.Controlls);
         Button connectBtn = (Button) findViewById(R.id.Connectbtn);
         TextView connectInformationTV = findViewById(R.id.ConnectInformationTV);
 
@@ -87,7 +95,6 @@ public class MainActivity extends AppCompatActivity {
                 Set<BluetoothDevice> bluetoothDevices = bluetoothAdapter.getBondedDevices();
                 BluetoothDevice carBluetoothModule = null;
                 for (BluetoothDevice d: bluetoothDevices) {
-                    String test = d.getName();
                     if (d.getName().equals("HC-05")) {
                         carBluetoothModule = d;
                         break;
@@ -104,6 +111,8 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onConnected() {
                         connectInformationTV.setText("Device connected");
+                        connectBtn.setVisibility(View.INVISIBLE);
+                        controlsLayout.setVisibility(View.VISIBLE);
                     }
 
                     @Override
@@ -134,6 +143,8 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onDisconnected() {
                         connectInformationTV.setText("Device disconnected");
+                        connectBtn.setVisibility(View.VISIBLE);
+                        controlsLayout.setVisibility(View.INVISIBLE);
                     }
                 });
 
@@ -144,19 +155,76 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        testOn.setOnClickListener(new View.OnClickListener() {
+        forwardBtn.setOnTouchListener(new View.OnTouchListener() {
             @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
             @Override
-            public void onClick(View v) {
-                bleManager.sendInt(CarCommands.TEST_ON.getValue());
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN)
+                {
+                    bleManager.sendInt(CarCommands.FORWARDS.getValue());
+                }
+                else
+                {
+                    stop(bleManager);
+                }
+                return true;
             }
         });
 
-        testOff.setOnClickListener(new View.OnClickListener() {
+        backwardBtn.setOnTouchListener(new View.OnTouchListener() {
             @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
             @Override
-            public void onClick(View v) {
-                bleManager.sendInt(CarCommands.TEST_OFF.getValue());
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN)
+                {
+                    bleManager.sendInt(CarCommands.BACKWARDS.getValue());
+                }
+                else
+                {
+                    stop(bleManager);
+                }
+                return true;
+            }
+        });
+
+        leftBtn.setOnTouchListener(new View.OnTouchListener() {
+            @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN)
+                {
+                    bleManager.sendInt(CarCommands.LEFT.getValue());
+                }
+                else
+                {
+                    stop(bleManager);
+                }
+                return true;
+            }
+        });
+
+        rightBtn.setOnTouchListener(new View.OnTouchListener() {
+            @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN)
+                {
+                    bleManager.sendInt(CarCommands.RIGHT.getValue());
+                }
+                else
+                {
+                    stop(bleManager);
+                }
+                return true;
+            }
+        });
+
+        stopBtn.setOnTouchListener(new View.OnTouchListener() {
+            @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                stop(bleManager);
+                return true;
             }
         });
     }
@@ -166,5 +234,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         bleManager.disconnect();
+    }
+
+    @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
+    private static void stop(BLEManager bleManager)
+    {
+        bleManager.sendInt(CarCommands.STOP.getValue());
     }
 }
