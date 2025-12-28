@@ -69,6 +69,11 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    if (checkSelfPermission(Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
+                        requestPermissions(new String[]{Manifest.permission.BLUETOOTH_SCAN}, 2);
+                        return;
+                    }
+
                     if (checkSelfPermission(Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
                         requestPermissions(new String[]{Manifest.permission.BLUETOOTH_CONNECT}, 1);
                         return;
@@ -80,18 +85,6 @@ public class MainActivity extends AppCompatActivity {
                     startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
                     onActivityResult(REQUEST_ENABLE_BT, 200, enableBtIntent);
                 }
-
-                if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
-                    // TODO: Consider calling
-                    //    ActivityCompat#requestPermissions
-                    // here to request the missing permissions, and then overriding
-                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                    //                                          int[] grantResults)
-                    // to handle the case where the user grants the permission. See the documentation
-                    // for ActivityCompat#requestPermissions for more details.
-                    //return;
-                }
-
 
                 // Check if HC-05 is already paired with phone
                 Set<BluetoothDevice> bluetoothDevices = bluetoothAdapter.getBondedDevices();
@@ -253,6 +246,43 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         bleManager.disconnect();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == 1 || requestCode == 2) {
+            boolean allGranted = true;
+            if (grantResults == null || grantResults.length == 0) {
+                allGranted = false;
+            } else {
+                for (int r : grantResults) {
+                    if (r != PackageManager.PERMISSION_GRANTED) {
+                        allGranted = false;
+                        break;
+                    }
+                }
+            }
+
+            TextView connectInformationTV = findViewById(R.id.ConnectInformationTV);
+            if (allGranted) {
+                if (connectInformationTV != null)
+                {
+                    connectInformationTV.setText("Permissions granted. Retrying...");
+                }
+                Button connectBtn = findViewById(R.id.Connectbtn);
+                if (connectBtn != null)
+                {
+                    connectBtn.performClick();
+                }
+            } else {
+                if (connectInformationTV != null)
+                {
+                    connectInformationTV.setText("Bluetooth permission denied");
+                }
+            }
+        }
     }
 
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
