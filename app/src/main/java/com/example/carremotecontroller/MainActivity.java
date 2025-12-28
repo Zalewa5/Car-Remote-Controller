@@ -12,7 +12,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -46,11 +48,11 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        Button forwardBtn = (Button) findViewById(R.id.ForwardsBtn);
-        Button backwardBtn = (Button) findViewById(R.id.BackwardsBtn);
-        Button stopBtn = (Button) findViewById(R.id.StopBtn);
-        Button leftBtn = (Button) findViewById(R.id.LeftBtn);
-        Button rightBtn = (Button) findViewById(R.id.RightBtn);
+        Button forwardBtn = findViewById(R.id.ForwardsBtn);
+        Button backwardBtn = findViewById(R.id.BackwardsBtn);
+        Button stopBtn = findViewById(R.id.StopBtn);
+        Button leftBtn = findViewById(R.id.LeftBtn);
+        Button rightBtn = findViewById(R.id.RightBtn);
         ConstraintLayout controlsLayout = (ConstraintLayout) findViewById(R.id.Controlls);
         Button connectBtn = (Button) findViewById(R.id.Connectbtn);
         TextView connectInformationTV = findViewById(R.id.ConnectInformationTV);
@@ -162,10 +164,12 @@ public class MainActivity extends AppCompatActivity {
                 if (event.getAction() == MotionEvent.ACTION_DOWN)
                 {
                     bleManager.sendInt(CarCommands.FORWARDS.getValue());
+                    v.setAlpha(0.8F);
                 }
-                else
+                else if (event.getAction() == MotionEvent.ACTION_UP)
                 {
                     stop(bleManager);
+                    v.setAlpha(1F);
                 }
                 return true;
             }
@@ -178,10 +182,12 @@ public class MainActivity extends AppCompatActivity {
                 if (event.getAction() == MotionEvent.ACTION_DOWN)
                 {
                     bleManager.sendInt(CarCommands.BACKWARDS.getValue());
+                    v.setAlpha(0.8F);
                 }
-                else
+                else if (event.getAction() == MotionEvent.ACTION_UP)
                 {
                     stop(bleManager);
+                    v.setAlpha(1F);
                 }
                 return true;
             }
@@ -194,10 +200,12 @@ public class MainActivity extends AppCompatActivity {
                 if (event.getAction() == MotionEvent.ACTION_DOWN)
                 {
                     bleManager.sendInt(CarCommands.LEFT.getValue());
+                    v.setAlpha(0.8F);
                 }
-                else
+                else if (event.getAction() == MotionEvent.ACTION_UP)
                 {
                     stop(bleManager);
+                    v.setAlpha(1F);
                 }
                 return true;
             }
@@ -210,10 +218,12 @@ public class MainActivity extends AppCompatActivity {
                 if (event.getAction() == MotionEvent.ACTION_DOWN)
                 {
                     bleManager.sendInt(CarCommands.RIGHT.getValue());
+                    v.setAlpha(0.8F);
                 }
-                else
+                else if (event.getAction() == MotionEvent.ACTION_UP)
                 {
                     stop(bleManager);
+                    v.setAlpha(1F);
                 }
                 return true;
             }
@@ -223,7 +233,16 @@ public class MainActivity extends AppCompatActivity {
             @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                stop(bleManager);
+                if (event.getAction() == MotionEvent.ACTION_DOWN)
+                {
+                    stop(bleManager);
+                    v.setAlpha(0.8F);
+                }
+                else if (event.getAction() == MotionEvent.ACTION_UP)
+                {
+                    stop(bleManager);
+                    v.setAlpha(1F);
+                }
                 return true;
             }
         });
