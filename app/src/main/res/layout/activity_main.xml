@@ -36,58 +36,57 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ConnectInformationTV" >
+        app:layout_constraintTop_toBottomOf="@id/ConnectInformationTV">
 
-        <Button
+        <ImageButton
             android:id="@+id/ForwardsBtn"
-            style="@android:style/Widget.Material.Light.Button.Inset"
             android:layout_width="120dp"
             android:layout_height="120dp"
-            android:text="W"
+            android:background="@drawable/up"
             app:layout_constraintBottom_toTopOf="@id/StopBtn"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <Button
+        <ImageButton
             android:id="@+id/StopBtn"
             style="@android:style/Widget.Material.Light.Button.Inset"
             android:layout_width="120dp"
             android:layout_height="120dp"
-            android:text="STOP"
+            android:background="@drawable/stop"
             app:layout_constraintBottom_toTopOf="@id/BackwardsBtn"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/ForwardsBtn" />
 
-        <Button
+        <ImageButton
             android:id="@+id/BackwardsBtn"
             style="@android:style/Widget.Material.Light.Button.Inset"
             android:layout_width="120dp"
             android:layout_height="120dp"
-            android:text="S"
+            android:background="@drawable/down"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/StopBtn" />
 
-        <Button
+        <ImageButton
             android:id="@+id/LeftBtn"
             style="@android:style/Widget.Material.Light.Button.Inset"
             android:layout_width="120dp"
             android:layout_height="120dp"
-            android:text="A"
+            android:background="@drawable/left"
             app:layout_constraintBottom_toTopOf="@id/BackwardsBtn"
             app:layout_constraintEnd_toStartOf="@id/StopBtn"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/ForwardsBtn" />
 
-        <Button
+        <ImageButton
             android:id="@+id/RightBtn"
             style="@android:style/Widget.Material.Light.Button.Inset"
             android:layout_width="120dp"
             android:layout_height="120dp"
-            android:text="D"
+            android:background="@drawable/right"
             app:layout_constraintBottom_toTopOf="@id/BackwardsBtn"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/StopBtn"

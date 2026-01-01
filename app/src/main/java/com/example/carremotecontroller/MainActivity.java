@@ -19,6 +19,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.RequiresPermission;
@@ -53,13 +54,13 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // Find UI elements
-        Button forwardBtn = findViewById(R.id.ForwardsBtn);
-        Button backwardBtn = findViewById(R.id.BackwardsBtn);
-        Button stopBtn = findViewById(R.id.StopBtn);
-        Button leftBtn = findViewById(R.id.LeftBtn);
-        Button rightBtn = findViewById(R.id.RightBtn);
-        ConstraintLayout controlsLayout = (ConstraintLayout) findViewById(R.id.Controlls);
-        Button connectBtn = (Button) findViewById(R.id.Connectbtn);
+        ImageButton forwardBtn = findViewById(R.id.ForwardsBtn);
+        ImageButton backwardBtn = findViewById(R.id.BackwardsBtn);
+        ImageButton stopBtn = findViewById(R.id.StopBtn);
+        ImageButton leftBtn = findViewById(R.id.LeftBtn);
+        ImageButton rightBtn = findViewById(R.id.RightBtn);
+        ConstraintLayout controlsLayout = findViewById(R.id.Controlls);
+        Button connectBtn = findViewById(R.id.Connectbtn);
         TextView connectInformationTV = findViewById(R.id.ConnectInformationTV);
 
         connectBtn.setOnClickListener(new View.OnClickListener() {
