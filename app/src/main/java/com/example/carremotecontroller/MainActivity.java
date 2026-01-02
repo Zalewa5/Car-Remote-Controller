@@ -18,7 +18,6 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
@@ -60,8 +59,23 @@ public class MainActivity extends AppCompatActivity {
         ImageButton leftBtn = findViewById(R.id.LeftBtn);
         ImageButton rightBtn = findViewById(R.id.RightBtn);
         ConstraintLayout controlsLayout = findViewById(R.id.Controlls);
-        Button connectBtn = findViewById(R.id.Connectbtn);
+        ImageButton connectBtn = findViewById(R.id.Connectbtn);
         TextView connectInformationTV = findViewById(R.id.ConnectInformationTV);
+
+        connectBtn.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN)
+                {
+                    v.setAlpha(0.8F);
+                }
+                else if (event.getAction() == MotionEvent.ACTION_UP)
+                {
+                    v.setAlpha(1F);
+                }
+                return false;
+            }
+        });
 
         connectBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -295,7 +309,7 @@ public class MainActivity extends AppCompatActivity {
                 {
                     connectInformationTV.setText("Permissions granted. Retrying...");
                 }
-                Button connectBtn = findViewById(R.id.Connectbtn);
+                ImageButton connectBtn = findViewById(R.id.Connectbtn);
                 if (connectBtn != null)
                 {
                     connectBtn.performClick();

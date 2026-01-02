@@ -5,9 +5,7 @@ public enum CarCommands {
     BACKWARDS(2),
     RIGHT(6),
     LEFT(4),
-    STOP(5),
-    TEST_ON(1),
-    TEST_OFF(0);
+    STOP(5);
     private final int value;
 
     CarCommands(int value) {

@@ -18,11 +18,13 @@
         app:layout_constraintTop_toTopOf="parent" />
 
 
-    <Button
+    <ImageButton
         android:id="@+id/Connectbtn"
+        android:minWidth="128dp"
+        android:minHeight="48dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Connect"
+        android:background="@drawable/connect"
         app:layout_constraintBottom_toTopOf="@id/Controlls"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
