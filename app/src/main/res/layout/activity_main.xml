@@ -40,6 +40,28 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ConnectInformationTV">
 
+        <TextView
+            android:id="@+id/speedTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Prędkość:"
+            app:layout_constraintBottom_toTopOf="@id/speedSeekBar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <SeekBar
+            android:id="@+id/speedSeekBar"
+            android:layout_width="360dp"
+            android:layout_height="wrap_content"
+            android:min="10"
+            android:max="110"
+            android:layout_marginBottom="10dp"
+            app:layout_constraintTop_toBottomOf="@id/speedTV"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/HonkBtn"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
         <ImageButton
             android:id="@+id/HonkBtn"
             android:layout_width="120dp"
@@ -48,7 +70,7 @@
             app:layout_constraintBottom_toTopOf="@id/UpLeftBtn"
             app:layout_constraintEnd_toStartOf="@id/StopBtn"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/speedSeekBar" />
 
         <ImageButton
             android:id="@+id/ForwardsBtn"
@@ -58,7 +80,7 @@
             app:layout_constraintBottom_toTopOf="@id/StopBtn"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/HonkBtn" />
 
         <ImageButton
             android:id="@+id/StopBtn"

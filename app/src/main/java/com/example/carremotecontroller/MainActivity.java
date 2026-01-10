@@ -19,6 +19,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.RequiresPermission;
@@ -66,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
         ImageButton downLeftBtn = findViewById(R.id.DownLeftBtn);
         ImageButton downRightBtn = findViewById(R.id.DownRightBtn);
         ImageButton honkBtn = findViewById(R.id.HonkBtn);
+        SeekBar speedSeekBar = findViewById(R.id.speedSeekBar);
 
         connectBtn.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -370,13 +372,32 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
+
+        speedSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                bleManager.sendInt(seekBar.getProgress());
+            }
+        });
     }
 
     @RequiresPermission(allOf = {Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN})
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        bleManager.disconnect();
+        if (bleManager != null)
+            bleManager.disconnect();
     }
 
     // Checks if all of the permissions are granted
