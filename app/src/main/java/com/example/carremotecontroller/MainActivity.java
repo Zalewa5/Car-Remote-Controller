@@ -61,6 +61,11 @@ public class MainActivity extends AppCompatActivity {
         ConstraintLayout controlsLayout = findViewById(R.id.Controlls);
         ImageButton connectBtn = findViewById(R.id.Connectbtn);
         TextView connectInformationTV = findViewById(R.id.ConnectInformationTV);
+        ImageButton upLeftBtn = findViewById(R.id.UpLeftBtn);
+        ImageButton upRightBtn = findViewById(R.id.UpRightBtn);
+        ImageButton downLeftBtn = findViewById(R.id.DownLeftBtn);
+        ImageButton downRightBtn = findViewById(R.id.DownRightBtn);
+        ImageButton honkBtn = findViewById(R.id.HonkBtn);
 
         connectBtn.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -141,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onConnected() {
                         connectInformationTV.setText("Device connected");
-                        connectBtn.setVisibility(View.INVISIBLE);
+                        connectBtn.setVisibility(View.GONE);
                         controlsLayout.setVisibility(View.VISIBLE);
                     }
 
@@ -174,7 +179,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onDisconnected() {
                         connectInformationTV.setText("Device disconnected");
                         connectBtn.setVisibility(View.VISIBLE);
-                        controlsLayout.setVisibility(View.INVISIBLE);
+                        controlsLayout.setVisibility(View.GONE);
                     }
                 });
 
@@ -271,6 +276,95 @@ public class MainActivity extends AppCompatActivity {
                 else if (event.getAction() == MotionEvent.ACTION_UP)
                 {
                     stop(bleManager);
+                    v.setAlpha(1F);
+                }
+                return true;
+            }
+        });
+
+        upRightBtn.setOnTouchListener(new View.OnTouchListener() {
+            @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN)
+                {
+                    bleManager.sendInt(CarCommands.UPRIGHT.getValue());
+                    v.setAlpha(0.8F);
+                }
+                else if (event.getAction() == MotionEvent.ACTION_UP)
+                {
+                    stop(bleManager);
+                    v.setAlpha(1F);
+                }
+                return true;
+            }
+        });
+
+        upLeftBtn.setOnTouchListener(new View.OnTouchListener() {
+            @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN)
+                {
+                    bleManager.sendInt(CarCommands.UPLEFT.getValue());
+                    v.setAlpha(0.8F);
+                }
+                else if (event.getAction() == MotionEvent.ACTION_UP)
+                {
+                    stop(bleManager);
+                    v.setAlpha(1F);
+                }
+                return true;
+            }
+        });
+
+        downRightBtn.setOnTouchListener(new View.OnTouchListener() {
+            @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN)
+                {
+                    bleManager.sendInt(CarCommands.DOWNRIGHT.getValue());
+                    v.setAlpha(0.8F);
+                }
+                else if (event.getAction() == MotionEvent.ACTION_UP)
+                {
+                    stop(bleManager);
+                    v.setAlpha(1F);
+                }
+                return true;
+            }
+        });
+
+        downLeftBtn.setOnTouchListener(new View.OnTouchListener() {
+            @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN)
+                {
+                    bleManager.sendInt(CarCommands.DOWNLEFT.getValue());
+                    v.setAlpha(0.8F);
+                }
+                else if (event.getAction() == MotionEvent.ACTION_UP)
+                {
+                    stop(bleManager);
+                    v.setAlpha(1F);
+                }
+                return true;
+            }
+        });
+
+        honkBtn.setOnTouchListener(new View.OnTouchListener() {
+            @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN)
+                {
+                    bleManager.sendInt(CarCommands.HONK.getValue());
+                    v.setAlpha(0.8F);
+                }
+                else if (event.getAction() == MotionEvent.ACTION_UP)
+                {
                     v.setAlpha(1F);
                 }
                 return true;

@@ -34,11 +34,21 @@
         android:id="@+id/Controlls"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="invisible"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ConnectInformationTV">
+
+        <ImageButton
+            android:id="@+id/HonkBtn"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:background="@drawable/honk"
+            app:layout_constraintBottom_toTopOf="@id/UpLeftBtn"
+            app:layout_constraintEnd_toStartOf="@id/StopBtn"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
             android:id="@+id/ForwardsBtn"
@@ -48,7 +58,7 @@
             app:layout_constraintBottom_toTopOf="@id/StopBtn"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="parent" />
 
         <ImageButton
             android:id="@+id/StopBtn"
@@ -93,6 +103,46 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/StopBtn"
             app:layout_constraintTop_toBottomOf="@id/ForwardsBtn" />
+
+        <ImageButton
+            android:id="@+id/UpLeftBtn"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:background="@drawable/upleft"
+            app:layout_constraintBottom_toTopOf="@id/StopBtn"
+            app:layout_constraintEnd_toStartOf="@id/StopBtn"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/HonkBtn" />
+
+        <ImageButton
+            android:id="@+id/UpRightBtn"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:background="@drawable/upright"
+            app:layout_constraintBottom_toTopOf="@id/StopBtn"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/StopBtn"
+            app:layout_constraintTop_toBottomOf="@id/HonkBtn" />
+
+        <ImageButton
+            android:id="@+id/DownLeftBtn"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:background="@drawable/downleft"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/StopBtn"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/StopBtn" />
+
+        <ImageButton
+            android:id="@+id/DownRightBtn"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:background="@drawable/downright"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/StopBtn"
+            app:layout_constraintTop_toBottomOf="@id/StopBtn" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
