@@ -198,16 +198,7 @@ public class MainActivity extends AppCompatActivity {
             @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN)
-                {
-                    bleManager.sendInt(CarCommands.FORWARDS.getValue());
-                    v.setAlpha(0.8F);
-                }
-                else if (event.getAction() == MotionEvent.ACTION_UP)
-                {
-                    stop(bleManager);
-                    v.setAlpha(1F);
-                }
+                move(event, CarCommands.FORWARDS, v);
                 return true;
             }
         });
@@ -216,16 +207,7 @@ public class MainActivity extends AppCompatActivity {
             @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN)
-                {
-                    bleManager.sendInt(CarCommands.BACKWARDS.getValue());
-                    v.setAlpha(0.8F);
-                }
-                else if (event.getAction() == MotionEvent.ACTION_UP)
-                {
-                    stop(bleManager);
-                    v.setAlpha(1F);
-                }
+                move(event, CarCommands.BACKWARDS, v);
                 return true;
             }
         });
@@ -234,16 +216,7 @@ public class MainActivity extends AppCompatActivity {
             @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN)
-                {
-                    bleManager.sendInt(CarCommands.LEFT.getValue());
-                    v.setAlpha(0.8F);
-                }
-                else if (event.getAction() == MotionEvent.ACTION_UP)
-                {
-                    stop(bleManager);
-                    v.setAlpha(1F);
-                }
+                move(event, CarCommands.LEFT, v);
                 return true;
             }
         });
@@ -252,16 +225,7 @@ public class MainActivity extends AppCompatActivity {
             @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN)
-                {
-                    bleManager.sendInt(CarCommands.RIGHT.getValue());
-                    v.setAlpha(0.8F);
-                }
-                else if (event.getAction() == MotionEvent.ACTION_UP)
-                {
-                    stop(bleManager);
-                    v.setAlpha(1F);
-                }
+                move(event, CarCommands.RIGHT, v);
                 return true;
             }
         });
@@ -270,16 +234,7 @@ public class MainActivity extends AppCompatActivity {
             @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN)
-                {
-                    stop(bleManager);
-                    v.setAlpha(0.8F);
-                }
-                else if (event.getAction() == MotionEvent.ACTION_UP)
-                {
-                    stop(bleManager);
-                    v.setAlpha(1F);
-                }
+                move(event, CarCommands.STOP, v);
                 return true;
             }
         });
@@ -288,16 +243,7 @@ public class MainActivity extends AppCompatActivity {
             @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN)
-                {
-                    bleManager.sendInt(CarCommands.UPRIGHT.getValue());
-                    v.setAlpha(0.8F);
-                }
-                else if (event.getAction() == MotionEvent.ACTION_UP)
-                {
-                    stop(bleManager);
-                    v.setAlpha(1F);
-                }
+                move(event, CarCommands.UPRIGHT, v);
                 return true;
             }
         });
@@ -306,16 +252,7 @@ public class MainActivity extends AppCompatActivity {
             @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN)
-                {
-                    bleManager.sendInt(CarCommands.UPLEFT.getValue());
-                    v.setAlpha(0.8F);
-                }
-                else if (event.getAction() == MotionEvent.ACTION_UP)
-                {
-                    stop(bleManager);
-                    v.setAlpha(1F);
-                }
+                move(event, CarCommands.UPLEFT, v);
                 return true;
             }
         });
@@ -324,16 +261,7 @@ public class MainActivity extends AppCompatActivity {
             @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN)
-                {
-                    bleManager.sendInt(CarCommands.DOWNRIGHT.getValue());
-                    v.setAlpha(0.8F);
-                }
-                else if (event.getAction() == MotionEvent.ACTION_UP)
-                {
-                    stop(bleManager);
-                    v.setAlpha(1F);
-                }
+                move(event, CarCommands.DOWNRIGHT, v);
                 return true;
             }
         });
@@ -342,16 +270,7 @@ public class MainActivity extends AppCompatActivity {
             @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN)
-                {
-                    bleManager.sendInt(CarCommands.DOWNLEFT.getValue());
-                    v.setAlpha(0.8F);
-                }
-                else if (event.getAction() == MotionEvent.ACTION_UP)
-                {
-                    stop(bleManager);
-                    v.setAlpha(1F);
-                }
+                move(event, CarCommands.DOWNLEFT, v);
                 return true;
             }
         });
@@ -390,6 +309,17 @@ public class MainActivity extends AppCompatActivity {
                 bleManager.sendInt(seekBar.getProgress());
             }
         });
+    }
+
+    @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
+    private void move(MotionEvent event, CarCommands direction, View v) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            bleManager.sendInt(direction.getValue());
+            v.setAlpha(0.8F);
+        } else if (event.getAction() == MotionEvent.ACTION_UP) {
+            stop(bleManager);
+            v.setAlpha(1F);
+        }
     }
 
     @RequiresPermission(allOf = {Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN})
