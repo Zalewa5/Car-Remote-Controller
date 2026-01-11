@@ -317,7 +317,6 @@ public class MainActivity extends AppCompatActivity {
             bleManager.sendInt(direction.getValue());
             v.setAlpha(0.8F);
         } else if (event.getAction() == MotionEvent.ACTION_UP) {
-            stop(bleManager);
             v.setAlpha(1F);
         }
     }
